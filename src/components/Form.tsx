@@ -1,16 +1,34 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { borderColor } from '../helpers';
-
-const theme = 'dark';
+import { ExpensesContext } from '../context/ExpensesContext';
+import { v4 as uid } from 'uuid';
+import { ThemeContext } from '../context/ThemeContext';
 
 export const Form = () => {
+  const { addExpense } = useContext(ExpensesContext);
+  const { theme } = useContext(ThemeContext);
+
   const [item, setItem] = useState<string>('');
   const [amount, setAmount] = useState<number>(0);
   const [message, setMessage] = useState<string | undefined>(undefined);
 
   const handleAddExpense = () => {
     // handle adding of new expense
+
+    if (!item.trim()) {
+      setMessage('Enter item');
+      return;
+    }
+    if (amount <= 0) {
+      setMessage('Enter amount');
+      return;
+    }
+
+    addExpense({ id: uid(), item, amount });
+    setItem('');
+    setAmount(0);
+    setMessage(undefined);
   };
 
   return (
